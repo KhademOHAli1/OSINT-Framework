@@ -134,12 +134,12 @@ export class D3TreeRenderer {
       return;
     }
 
-    // Adjust margins based on viewport size (much larger values for maximum readability)
+    // Adjust margins based on viewport size
     const isMobile = window.innerWidth <= 768;
     const baseFontSize = 16; // Assume 16px base font size
     const dynamicMargin = isMobile 
-      ? { top: 5 * baseFontSize, right: 8 * baseFontSize, bottom: 5 * baseFontSize, left: 8 * baseFontSize }
-      : { top: 9 * baseFontSize, right: 16 * baseFontSize, bottom: 9 * baseFontSize, left: 16 * baseFontSize };
+      ? { top: 3 * baseFontSize, right: 6 * baseFontSize, bottom: 3 * baseFontSize, left: 6 * baseFontSize }
+      : { top: 4 * baseFontSize, right: 12 * baseFontSize, bottom: 4 * baseFontSize, left: 12 * baseFontSize };
 
     // Create hierarchy from root
     const hierarchyRoot = d3.hierarchy(this.root, d => d.children);
@@ -149,7 +149,7 @@ export class D3TreeRenderer {
     const nodes = treeData.descendants();
     const links = treeData.descendants().slice(1);
 
-    // Calculate bounds of the tree
+    // Calculate bounds of the tree content
     let minX = Infinity, maxX = -Infinity;
     let minY = Infinity, maxY = -Infinity;
 
@@ -169,52 +169,46 @@ export class D3TreeRenderer {
       maxY = Math.max(maxY, d.y);
     });
 
-    // Ensure we have reasonable bounds (much larger fallbacks)
+    // Ensure we have reasonable bounds with proper fallbacks
     if (!isFinite(minX)) minX = 0;
-    if (!isFinite(maxX)) maxX = isMobile ? 20 * baseFontSize : 36 * baseFontSize; // Increased from 16/30em
+    if (!isFinite(maxX)) maxX = isMobile ? 16 * baseFontSize : 30 * baseFontSize;
     if (!isFinite(minY)) minY = 0;
-    if (!isFinite(maxY)) maxY = isMobile ? 32 * baseFontSize : 54 * baseFontSize; // Increased from 24/45em
+    if (!isFinite(maxY)) maxY = isMobile ? 24 * baseFontSize : 45 * baseFontSize;
 
-    // Calculate required dimensions with mobile-first approach
+    // Calculate actual content dimensions
     const treeContentWidth = maxY - minY;
     const treeContentHeight = maxX - minX;
     
-    // For mobile, ensure we have enough space for all content without artificial constraints
+    // Calculate SVG dimensions to contain all content plus margins
     const containerElement = this.svg.node()?.parentElement;
     const containerWidth = containerElement?.clientWidth || 1200;
     
-    const svgWidth = isMobile 
-      ? Math.max(treeContentWidth + dynamicMargin.left + dynamicMargin.right, 32 * baseFontSize)
-      : containerWidth;
+    // Ensure SVG width accommodates all content plus margins
+    const requiredWidth = treeContentWidth + dynamicMargin.left + dynamicMargin.right;
+    const svgWidth = Math.max(requiredWidth, containerWidth);
     
-    // For mobile, calculate height based on actual content needs without max constraints
-    const baseHeightMultiplier = isMobile ? 4 : 8;
-    const depthAdjustedPadding = baseHeightMultiplier * baseFontSize; // Balanced padding
-    const minContentHeight = isMobile ? 20 * baseFontSize : 28 * baseFontSize;
-    const actualContentHeight = Math.max(treeContentHeight, minContentHeight);
-    const svgHeight = actualContentHeight + depthAdjustedPadding; // Balanced height calculation
+    // Calculate SVG height to contain all content plus margins
+    const requiredHeight = treeContentHeight + dynamicMargin.top + dynamicMargin.bottom;
+    const minHeight = isMobile ? 20 * baseFontSize : 28 * baseFontSize;
+    const svgHeight = Math.max(requiredHeight, minHeight);
 
-    // Update SVG dimensions - remove max-height constraints on mobile for full content visibility
+    // Update SVG dimensions to ensure no content is cut off
     this.svg
       .attr('viewBox', `0 0 ${svgWidth} ${svgHeight}`)
       .style('width', '100%')
       .style('height', 'auto')
-      .style('max-height', isMobile ? 'none' : (54 * 1.8) + 'em') // Remove mobile height limits
+      .style('max-height', isMobile ? 'none' : 'none') // Remove all height constraints
       .attr('preserveAspectRatio', 'xMidYMid meet');
 
-    // Position tree from the left with proper margins
+    // Position tree content within the SVG with proper offset
     const offsetX = dynamicMargin.left - minY;
     const offsetY = dynamicMargin.top - minX;
     
     this.g.attr('transform', `translate(${offsetX},${offsetY})`);
 
-    // Update tree layout size with much larger dimensions
-    const treeWidth = isMobile 
-      ? Math.max(maxY - minY, 32 * baseFontSize) // Increased from 24em
-      : Math.max(maxY - minY, 54 * baseFontSize); // Increased from 45em
-    const treeHeight = isMobile 
-      ? Math.max(maxX - minX, 20 * baseFontSize) // Increased from 16em
-      : Math.max(maxX - minX, 36 * baseFontSize); // Increased from 30em
+    // Update tree layout size based on actual content
+    const treeWidth = Math.max(maxY - minY, isMobile ? 24 * baseFontSize : 36 * baseFontSize);
+    const treeHeight = Math.max(maxX - minX, isMobile ? 16 * baseFontSize : 24 * baseFontSize);
     this.tree.size([treeHeight, treeWidth]);
 
     // Update nodes
