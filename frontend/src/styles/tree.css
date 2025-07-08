@@ -342,11 +342,13 @@
     min-height: auto; /* Remove fixed height constraints */
     overflow-x: auto; /* Allow horizontal scrolling for wide trees */
     overflow-y: visible; /* Ensure vertical content is fully visible */
+    padding-bottom: 1rem; /* Extra bottom padding for mobile */
   }
   
   .tree-svg {
     min-height: auto; /* Remove fixed height constraints */
     max-height: none; /* Remove height limits that cut off content */
+    padding-bottom: 1rem; /* Extra bottom padding for SVG */
   }
   
   .node-text {
@@ -377,12 +379,13 @@
 @media (max-width: 640px) {
   .tree-container {
     min-height: auto; /* Remove fixed height constraints */
-    padding: 0.5rem; /* Reduce padding to maximize content area */
+    padding: 0.5rem 0.5rem 1.5rem 0.5rem; /* Reduce padding but keep bottom space */
   }
   
   .tree-svg {
     min-height: auto; /* Remove fixed height constraints */
     max-height: none; /* Remove height limits */
+    padding-bottom: 1rem; /* Extra bottom padding */
   }
   
   .node-text {

@@ -102,7 +102,7 @@ defineExpose({ refreshTree })
   width: 100%;
   height: auto;
   min-height: auto;
-  padding: 2em;
+  padding: 2em 2em 3em 2em; /* Increased bottom padding */
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   transition: background 0.3s ease;
   overflow: hidden;
@@ -110,25 +110,25 @@ defineExpose({ refreshTree })
 
 @media (min-width: 375px) {
   .tree-content {
-    padding: 2.5em;
+    padding: 2.5em 2.5em 3.5em 2.5em; /* Increased bottom padding */
   }
 }
 
 @media (min-width: 640px) {
   .tree-content {
-    padding: 3em;
+    padding: 3em 3em 4em 3em; /* Increased bottom padding */
   }
 }
 
 @media (min-width: 1024px) {
   .tree-content {
-    padding: 3.5em;
+    padding: 3.5em 3.5em 4.5em 3.5em; /* Increased bottom padding */
   }
 }
 
 @media (min-width: 1280px) {
   .tree-content {
-    padding: 4em;
+    padding: 4em 4em 5em 4em; /* Increased bottom padding */
   }
 }
 
