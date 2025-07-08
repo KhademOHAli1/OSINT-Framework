@@ -11,7 +11,6 @@
             </div>
             <div class="hidden xs:block sm:block">
               <h1 class="text-sm xs:text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-white">OSINT Framework</h1>
-              <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Intelligence Gathering Platform</p>
             </div>
           </div>
           
