@@ -28,7 +28,7 @@ export class D3TreeRenderer {
 
   private width: number;
   private height: number;
-  private margin = { top: 60, right: 180, bottom: 100, left: 180 };
+  private margin = { top: 80, right: 180, bottom: 80, left: 180 };
 
   constructor(container: HTMLElement) {
     // Start with initial dimensions
@@ -138,8 +138,8 @@ export class D3TreeRenderer {
     const isMobile = window.innerWidth <= 768;
     const baseFontSize = 16; // Assume 16px base font size
     const dynamicMargin = isMobile 
-      ? { top: 4 * baseFontSize, right: 8 * baseFontSize, bottom: 6 * baseFontSize, left: 8 * baseFontSize }
-      : { top: 8 * baseFontSize, right: 16 * baseFontSize, bottom: 10 * baseFontSize, left: 16 * baseFontSize };
+      ? { top: 5 * baseFontSize, right: 8 * baseFontSize, bottom: 5 * baseFontSize, left: 8 * baseFontSize }
+      : { top: 9 * baseFontSize, right: 16 * baseFontSize, bottom: 9 * baseFontSize, left: 16 * baseFontSize };
 
     // Create hierarchy from root
     const hierarchyRoot = d3.hierarchy(this.root, d => d.children);
@@ -189,10 +189,10 @@ export class D3TreeRenderer {
     
     // For mobile, calculate height based on actual content needs without max constraints
     const baseHeightMultiplier = isMobile ? 4 : 8;
-    const depthAdjustedPadding = (baseHeightMultiplier + 2) * baseFontSize; // Extra padding for text
+    const depthAdjustedPadding = baseHeightMultiplier * baseFontSize; // Balanced padding
     const minContentHeight = isMobile ? 20 * baseFontSize : 28 * baseFontSize;
     const actualContentHeight = Math.max(treeContentHeight, minContentHeight);
-    const svgHeight = actualContentHeight + depthAdjustedPadding + (isMobile ? 3 * baseFontSize : 4 * baseFontSize); // Extra bottom space for text
+    const svgHeight = actualContentHeight + depthAdjustedPadding; // Balanced height calculation
 
     // Update SVG dimensions - remove max-height constraints on mobile for full content visibility
     this.svg
