@@ -102,7 +102,7 @@ defineExpose({ refreshTree })
   width: 100%;
   height: auto;
   min-height: auto;
-  padding: 1.5em;
+  padding: 2em;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   transition: background 0.3s ease;
   overflow: hidden;
@@ -110,25 +110,25 @@ defineExpose({ refreshTree })
 
 @media (min-width: 375px) {
   .tree-content {
-    padding: 2em;
+    padding: 2.5em;
   }
 }
 
 @media (min-width: 640px) {
   .tree-content {
-    padding: 2.5em;
+    padding: 3em;
   }
 }
 
 @media (min-width: 1024px) {
   .tree-content {
-    padding: 3em;
+    padding: 3.5em;
   }
 }
 
 @media (min-width: 1280px) {
   .tree-content {
-    padding: 3.5em;
+    padding: 4em;
   }
 }
 

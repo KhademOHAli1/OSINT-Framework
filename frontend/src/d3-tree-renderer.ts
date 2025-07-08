@@ -28,7 +28,7 @@ export class D3TreeRenderer {
 
   private width: number;
   private height: number;
-  private margin = { top: 50, right: 200, bottom: 50, left: 200 };
+  private margin = { top: 60, right: 180, bottom: 60, left: 180 };
 
   constructor(container: HTMLElement) {
     // Start with initial dimensions
@@ -138,8 +138,8 @@ export class D3TreeRenderer {
     const isMobile = window.innerWidth <= 768;
     const baseFontSize = 16; // Assume 16px base font size
     const dynamicMargin = isMobile 
-      ? { top: 3 * baseFontSize, right: 6 * baseFontSize, bottom: 3 * baseFontSize, left: 6 * baseFontSize } // Increased from 2/4
-      : { top: 6 * baseFontSize, right: 18 * baseFontSize, bottom: 6 * baseFontSize, left: 18 * baseFontSize }; // Increased from 4/14
+      ? { top: 4 * baseFontSize, right: 8 * baseFontSize, bottom: 4 * baseFontSize, left: 8 * baseFontSize }
+      : { top: 8 * baseFontSize, right: 16 * baseFontSize, bottom: 8 * baseFontSize, left: 16 * baseFontSize };
 
     // Create hierarchy from root
     const hierarchyRoot = d3.hierarchy(this.root, d => d.children);
