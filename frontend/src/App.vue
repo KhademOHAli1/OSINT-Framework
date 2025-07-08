@@ -6,8 +6,12 @@
         <div class="flex items-center justify-between space-x-2 sm:space-x-4">
           <!-- Logo and Title -->
           <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
-            <div class="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg">
-              <span class="text-white font-bold text-xs xs:text-sm sm:text-base lg:text-lg">O</span>
+            <div class="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg ring-1 ring-white/20 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-xl"></div>
+              <svg class="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                <circle cx="12" cy="12" r="3" stroke-width="2" opacity="0.6"></circle>
+              </svg>
             </div>
             <div class="hidden xs:block sm:block">
               <h1 class="text-sm xs:text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-white">OSINT Framework</h1>
@@ -142,8 +146,12 @@
         <div class="flex flex-col space-y-4 lg:flex-row lg:justify-between lg:items-center lg:space-y-0">
           <!-- Brand -->
           <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span class="text-white font-bold">O</span>
+            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center ring-1 ring-white/20 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-lg"></div>
+              <svg class="w-5 h-5 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                <circle cx="12" cy="12" r="3" stroke-width="2" opacity="0.6"></circle>
+              </svg>
             </div>
             <div>
               <div class="font-semibold text-sm sm:text-base">OSINT Framework</div>
