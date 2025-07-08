@@ -1,24 +1,32 @@
 {
-  "name": "arf",
-  "version": "1.0.0",
-  "description": "Advanced Reconnaissance Framework",
-  "main": "public/index.html",
+  "name": "osint-framework",
+  "version": "2.0.0",
+  "description": "Modern OSINT Framework with Vue 3 + TypeScript frontend",
   "scripts": {
-    "postinstall": "copyfiles -f ./node_modules/d3/d3.min.js ./public/js/vendor/d3",
-    "start": "cd ./public; python -m SimpleHTTPServer 8000"
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "preview": "cd frontend && npm run preview",
+    "lint": "cd frontend && npm run lint",
+    "install:frontend": "cd frontend && npm install",
+    "clean": "rm -rf dist frontend/node_modules"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lockfale/ARF.git"
+    "url": "git+https://github.com/lockfale/osint-framework.git"
   },
-  "author": "Justin Nordine (s0lray)",
-  "license": "",
-  "bugs": {
-    "url": "https://github.com/lockfale/ARF/issues"
-  },
-  "homepage": "https://github.com/lockfale/ARF#readme",
-  "devDependencies": {
-    "copyfiles": "^1.0.0",
-    "d3": "^3.5.16"
+  "keywords": [
+    "osint",
+    "open-source-intelligence",
+    "framework",
+    "vue",
+    "typescript",
+    "d3",
+    "security",
+    "investigation"
+  ],
+  "author": "OSINT Community",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
