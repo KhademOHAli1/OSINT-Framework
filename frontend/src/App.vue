@@ -22,7 +22,6 @@
           <div class="flex-1 max-w-md sm:max-w-2xl">
             <SearchBar 
               :search-stats="searchStats"
-              :show-quick-filters="true"
               :show-history="true"
               :show-suggestions="true"
               :suggestions="searchSuggestions"

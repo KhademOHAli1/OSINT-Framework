@@ -1,26 +1,24 @@
 import { config } from '@keystone-6/core';
 import { lists } from './schema';
 import { withAuth, session } from './auth';
-import { extendedSchema } from './src/graphql-extensions';
+// import { extendedSchema } from './src/graphql-extensions';
 
 const databaseURL = process.env.DATABASE_URL || 'postgresql://username:password@localhost:5432/osint_framework';
 
 export default withAuth(
   config({
     db: {
-      provider: 'postgresql',
-      url: databaseURL,
+      provider: 'sqlite',
+      url: 'file:./osint-framework.db',
       onConnect: async context => {
         console.log('Connected to database');
       },
       // Enable logging in development
       enableLogging: process.env.NODE_ENV === 'development',
-      // Database connection pooling
-      prismaClientPath: './node_modules/.prisma/client'
     },
     lists,
     session,
-    extendGraphqlSchema: extendedSchema,
+    // extendGraphqlSchema: extendedSchema,
     server: {
       cors: {
         origin: [
@@ -42,13 +40,6 @@ export default withAuth(
     },
     ui: {
       isAccessAllowed: (context) => !!context.session?.data,
-    },
-    images: {
-      upload: 'local',
-      local: {
-        storagePath: 'public/images',
-        baseUrl: '/images',
-      },
     },
   })
 );

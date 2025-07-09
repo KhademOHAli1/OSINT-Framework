@@ -9,8 +9,6 @@ import {
   integer,
   json,
   checkbox,
-  decimal,
-  url,
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 
@@ -97,7 +95,7 @@ export const lists = {
         links: true,
         dividers: true,
       }),
-      url: url({ validation: { isRequired: true } }),
+      url: text({ validation: { isRequired: true } }),
       alternativeUrls: json({
         defaultValue: [],
       }),
@@ -135,13 +133,12 @@ export const lists = {
       supportedRegions: json({
         defaultValue: [],
       }),
-      rating: decimal({
-        precision: 2,
-        scale: 1,
+      rating: integer({
         validation: {
-          min: '0',
-          max: '5',
+          min: 1,
+          max: 50, // 1-50 scale (equivalent to 0.1-5.0)
         },
+        defaultValue: 25, // equivalent to 2.5 stars
       }),
       usageCount: integer({ defaultValue: 0 }),
       lastChecked: timestamp(),
