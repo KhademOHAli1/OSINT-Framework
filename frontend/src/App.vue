@@ -161,6 +161,9 @@
         </div>
       </div>
     </footer>
+    
+    <!-- Tool Modal -->
+    <ToolModal />
   </div>
 </template>
 
@@ -170,8 +173,9 @@ import { useAppStore } from './stores/app'
 import { useAppData } from './composables/useAppData'
 import { useSearch } from './composables/useSearch'
 import type { SearchStats } from '@/types'
-import TreeContainer from './components/tree/TreeContainer-fixed.vue'
+import TreeContainer from './components/tree/TreeContainer.vue'
 import SearchBar from './components/SearchBar.vue'
+import ToolModal from './components/ToolModal.vue'
 
 const appStore = useAppStore()
 const { getSearchStats } = useSearch()

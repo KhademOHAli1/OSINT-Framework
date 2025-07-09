@@ -16,6 +16,11 @@ interface TreeNode {
   depth?: number;
 }
 
+export interface ToolClickEvent {
+  tool: TreeNode;
+  event: MouseEvent;
+}
+
 export class D3TreeRenderer {
   private svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, unknown>;
   private g: d3.Selection<SVGGElement, unknown, HTMLElement, unknown>;
@@ -29,8 +34,12 @@ export class D3TreeRenderer {
   private width: number;
   private height: number;
   private margin = { top: 80, right: 180, bottom: 80, left: 180 };
+  
+  // Event handlers
+  private onToolClickHandler?: (data: ToolClickEvent) => void;
 
-  constructor(container: HTMLElement) {
+  constructor(container: HTMLElement, onToolClick?: (data: ToolClickEvent) => void) {
+    this.onToolClickHandler = onToolClick;
     // Start with initial dimensions
     this.width = 1200 - this.margin.left - this.margin.right;
     this.height = 800 - this.margin.top - this.margin.bottom;
@@ -290,10 +299,33 @@ export class D3TreeRenderer {
       .style('font-weight', '500')
       .on('click', (event: MouseEvent, d: any) => {
         event.stopPropagation();
-        if (d.data.url) {
+        if (d.data.url && this.onToolClickHandler) {
+          this.onToolClickHandler({
+            tool: d.data,
+            event
+          });
+        } else if (d.data.url) {
+          // Fallback to direct opening if no handler
           window.open(d.data.url, '_blank', 'noopener,noreferrer');
         }
       });
+
+    // Add status indicators for URL nodes
+    nodeEnter.filter((d: any) => d.data.type === 'url')
+      .append('circle')
+      .attr('class', 'status-indicator')
+      .attr('r', 4)
+      .attr('cx', (d: any) => {
+        const depthScale = Math.max(0.6, 1 - (d.depth * 0.1));
+        const baseOffset = isMobile ? 14 : 16;
+        const scaledOffset = baseOffset * depthScale;
+        return d.data.children || d.data._children ? -scaledOffset - 8 : scaledOffset + 8;
+      })
+      .attr('cy', -8)
+      .style('fill', '#10b981') // Default to green (operational)
+      .style('stroke', '#ffffff')
+      .style('stroke-width', '1px')
+      .style('opacity', 0.8);
 
     // Transition nodes to their new position
     const nodeUpdate = nodeEnter.merge(node as any);
@@ -320,6 +352,18 @@ export class D3TreeRenderer {
       .duration(this.duration)
       .style('fill-opacity', 1);
 
+    // Update status indicators
+    nodeUpdate.select('.status-indicator')
+      .transition()
+      .duration(this.duration)
+      .attr('cx', (d: any) => {
+        const depthScale = Math.max(0.6, 1 - (d.depth * 0.1));
+        const baseOffset = isMobile ? 14 : 16;
+        const scaledOffset = baseOffset * depthScale;
+        return d.data.children || d.data._children ? -scaledOffset - 8 : scaledOffset + 8;
+      })
+      .style('opacity', 0.8);
+
     // Remove exiting nodes
     const nodeExit = node.exit().transition()
       .duration(this.duration)
@@ -331,6 +375,10 @@ export class D3TreeRenderer {
 
     nodeExit.select('.node-label')
       .style('fill-opacity', 1e-6);
+
+    nodeExit.select('.status-indicator')
+      .attr('r', 1e-6)
+      .style('opacity', 1e-6);
 
     // Update links with clean styling
     const link = this.g.selectAll('path.link')

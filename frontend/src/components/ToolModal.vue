@@ -60,7 +60,7 @@
                   @click="openTool"
                   class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
                 >
-                  <ExternalLinkIcon class="w-4 h-4 mr-2" />
+                  <ArrowTopRightOnSquareIcon class="w-4 h-4 mr-2" />
                   Open Tool
                 </button>
                 
@@ -235,7 +235,7 @@ import StatusBadge from './StatusBadge.vue'
 import type { TreeNode } from '@/types'
 import {
   XMarkIcon,
-  ExternalLinkIcon,
+  ArrowTopRightOnSquareIcon,
   ClipboardDocumentIcon,
   ShareIcon,
   ArrowPathIcon,

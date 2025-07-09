@@ -43,12 +43,34 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useAppStore } from '../../stores/app'
 import { useD3Tree } from '../../composables/useD3Tree'
 import { useAppData } from '../../composables/useAppData'
+import { useToolModal } from '../../composables/useToolModal'
+import type { ToolClickEvent } from '../../d3-tree-renderer'
 
 const appStore = useAppStore()
 const { retryLoad } = useAppData()
+const { openToolModal } = useToolModal()
 const treeContainer = ref<HTMLElement>()
 
-const { initializeTree, renderTree, resizeTree } = useD3Tree()
+// Handle tool clicks from the D3 tree
+const handleToolClick = (data: ToolClickEvent) => {
+  // Convert TreeNode from D3 to our TreeNode type and open modal
+  const tool = {
+    name: data.tool.name,
+    type: data.tool.type as 'folder' | 'url',
+    url: data.tool.url,
+    children: data.tool.children,
+    description: '', // Default empty description
+    category: '', // Default empty category
+    tags: [], // Default empty tags
+    lastChecked: undefined,
+    status: 'unknown' as const,
+    responseTime: undefined
+  }
+  
+  openToolModal(tool)
+}
+
+const { initializeTree, renderTree, resizeTree } = useD3Tree(handleToolClick)
 
 const isLoading = computed(() => appStore.isLoading)
 const error = computed(() => appStore.error)
