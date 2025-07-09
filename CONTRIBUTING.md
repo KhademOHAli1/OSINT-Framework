@@ -1,51 +1,117 @@
 # Contributing to OSINT Framework
 
-We welcome contributions to the OSINT Framework! This document provides guidelines for contributing to the project.
+First off, thank you for considering contributing to the OSINT Framework! It's people like you that make this project a valuable resource for the OSINT community.
+
+## 🎯 Ways to Contribute
+
+### 🔧 Code Contributions
+- **Frontend Development** - Vue 3 + TypeScript improvements
+- **Backend Development** - KeystoneJS + GraphQL enhancements
+- **Database Improvements** - Schema optimizations and new content types
+- **Performance Optimizations** - Speed and efficiency improvements
+- **Bug Fixes** - Help us squash bugs and improve stability
+
+### 📝 Content Contributions
+- **Tool Guides** - Create comprehensive tool documentation
+- **Articles** - Educational content and best practices
+- **Learning Paths** - Structured curricula for OSINT education
+- **Tool Reviews** - Share your experience with OSINT tools
+- **Tool Information** - Update and improve tool metadata
+
+### 🐛 Issue Reporting
+- **Bug Reports** - Help us identify and fix issues
+- **Feature Requests** - Suggest new functionality
+- **Documentation Issues** - Report unclear or missing documentation
+- **Accessibility Issues** - Help us improve accessibility
+
+### 📖 Documentation
+- **User Guides** - Help new users get started
+- **Developer Documentation** - Improve setup and development guides
+- **API Documentation** - Enhance GraphQL API documentation
+- **Translations** - Help make the platform multilingual
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Node.js 18+ and npm
-- Git
-- Modern web browser
+### Development Setup
 
-### Setting Up the Development Environment
-
-1. **Fork the repository** on GitHub
-2. **Clone your fork**:
+1. **Fork the Repository**
    ```bash
+   # Fork on GitHub, then clone your fork
    git clone https://github.com/YOUR_USERNAME/OSINT-Framework.git
    cd OSINT-Framework
    ```
 
-3. **Install dependencies**:
+2. **Set Up Development Environment**
    ```bash
-   cd frontend
+   # Backend setup
+   cd backend
    npm install
-   ```
-
-4. **Start the development server**:
-   ```bash
+   
+   # Create database
+   createdb osint_framework
+   
+   # Configure environment
+   cp .env.example .env
+   # Edit .env with your database credentials
+   
+   # Run migrations
+   npm run migrate
+   npm run seed
+   npm run create-admin
+   
+   # Start backend
    npm run dev
    ```
 
-5. **Open your browser** to `http://localhost:3000`
+3. **Frontend Setup**
+   ```bash
+   # Frontend setup (new terminal)
+   cd frontend
+   npm install
+   
+   # Configure environment
+   cp .env.example .env
+   # Edit .env with backend URL
+   
+   # Start frontend
+   npm run dev
+   ```
 
-## 🏗️ Project Structure
+4. **Verify Setup**
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:3000/api/graphql
+   - Admin Panel: http://localhost:3000/admin
+
+## 🏗️ Enhanced Project Structure
 
 ```
 OSINT-Framework/
-├── frontend/           # Vue 3 + TypeScript frontend
-│   ├── src/           # Source code
-│   │   ├── components/ # Vue components
-│   │   ├── composables/ # Vue composition functions
-│   │   ├── stores/     # Pinia state management
-│   │   └── styles/     # CSS files
-│   ├── public/        # Static assets
-│   └── package.json   # Frontend dependencies
-├── docs/              # Documentation
-├── package.json       # Root project scripts
-└── README.md          # Main documentation
+├── frontend/                      # Vue 3 + TypeScript SPA
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── common/           # Reusable UI components
+│   │   │   ├── tree/             # D3.js tree visualization
+│   │   │   ├── modals/           # Enhanced tool modals
+│   │   │   └── content/          # Content rendering components
+│   │   ├── composables/
+│   │   │   ├── useAppData.ts     # Main data management
+│   │   │   ├── useGraphQLData.ts # GraphQL API integration
+│   │   │   └── useEnhancedToolModal.ts # Tool modal logic
+│   │   ├── stores/               # Pinia state management
+│   │   ├── types.ts              # TypeScript definitions
+│   │   └── styles/               # Tailwind CSS customization
+│   └── public/                   # Static assets
+├── backend/                      # KeystoneJS + PostgreSQL
+│   ├── schema.ts                 # Main schema definition
+│   ├── enhanced-schema.ts        # Enhanced content models
+│   ├── keystone.ts               # Keystone configuration
+│   ├── migrations/               # Database migrations
+│   ├── scripts/                  # Utility scripts
+│   ├── schema.prisma             # Prisma schema
+│   └── schema.graphql            # Generated GraphQL schema
+├── docs/                         # Documentation
+├── ENHANCED_CONTENT_SYSTEM.md    # System documentation
+└── README.md                     # Main documentation
 ```
 
 ## 🎯 How to Contribute
@@ -128,24 +194,168 @@ git commit -m "docs: update installation instructions"
    npm run preview
    ```
 
-## 🐛 Reporting Issues
+## 📋 Coding Standards
 
-### Bug Reports
+### TypeScript/JavaScript
+```typescript
+// Use TypeScript for all new code
+interface ToolData {
+  id: string;
+  name: string;
+  category: string;
+  description?: string;
+}
 
-Include:
-- **Environment**: OS, browser, device type
-- **Steps to reproduce**: Clear, step-by-step instructions
-- **Expected behavior**: What should happen
-- **Actual behavior**: What actually happens
-- **Screenshots**: If applicable
+// Use meaningful variable names
+const osintTools: ToolData[] = [];
 
-### Feature Requests
+// Add JSDoc comments for functions
+/**
+ * Fetches tool data from GraphQL API
+ * @param toolId - Unique identifier for the tool
+ * @returns Promise resolving to tool data
+ */
+async function fetchToolData(toolId: string): Promise<ToolData> {
+  // Implementation
+}
+```
 
-Include:
-- **Use case**: Why is this needed?
-- **Description**: What should it do?
-- **Examples**: Similar features in other tools
-- **Implementation ideas**: Technical suggestions (optional)
+### Vue 3 Components
+```vue
+<template>
+  <!-- Use semantic HTML -->
+  <article class="tool-card">
+    <header>
+      <h2>{{ tool.name }}</h2>
+    </header>
+    <main>
+      <p>{{ tool.description }}</p>
+    </main>
+  </article>
+</template>
+
+<script setup lang="ts">
+// Use Composition API
+import { computed, ref } from 'vue'
+import type { Tool } from '@/types'
+
+interface Props {
+  tool: Tool
+}
+
+const props = defineProps<Props>()
+
+// Use meaningful variable names
+const isExpanded = ref(false)
+const formattedDescription = computed(() => {
+  return props.tool.description?.slice(0, 100) + '...'
+})
+</script>
+
+<style scoped>
+/* Use Tailwind CSS classes when possible */
+.tool-card {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-6;
+}
+</style>
+```
+
+### Backend (KeystoneJS)
+```typescript
+// Follow KeystoneJS patterns
+export const Tool = list({
+  access: allowAll,
+  fields: {
+    name: text({ validation: { isRequired: true } }),
+    slug: text({ 
+      validation: { isRequired: true },
+      isIndexed: 'unique'
+    }),
+    description: text({ ui: { displayMode: 'textarea' } }),
+    category: relationship({ 
+      ref: 'Category.tools',
+      many: false 
+    }),
+    // Use meaningful field names and validation
+  },
+  hooks: {
+    // Add hooks for data processing
+    beforeOperation: async ({ operation, item }) => {
+      if (operation === 'create' && !item.slug) {
+        item.slug = slugify(item.name)
+      }
+    }
+  }
+})
+```
+
+## 🧪 Testing Guidelines
+
+### Frontend Testing
+```bash
+# Run tests
+npm run test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run E2E tests
+npm run test:e2e
+```
+
+### Backend Testing
+```bash
+# Run API tests
+npm run test:api
+
+# Test database operations
+npm run test:db
+
+# Integration tests
+npm run test:integration
+```
+
+## 📝 Content Contribution Guidelines
+
+### Writing Tool Guides
+```markdown
+# Tool Name - Comprehensive Guide
+
+## Overview
+Brief description of what the tool does and why it's useful.
+
+## Prerequisites
+- Required skills or knowledge
+- Dependencies or accounts needed
+
+## Step-by-Step Tutorial
+### 1. Getting Started
+Detailed instructions with screenshots
+
+### 2. Basic Usage
+Common use cases with examples
+
+### 3. Advanced Features
+Power user features and tips
+
+## Best Practices
+- Security considerations
+- Privacy implications
+- Legal considerations
+
+## Troubleshooting
+Common issues and solutions
+
+## Related Tools
+Links to complementary tools
+```
+
+### Content Standards
+- **Accuracy**: Verify all information before submitting
+- **Clarity**: Write for beginners but include advanced tips
+- **Completeness**: Cover the full workflow, not just basics
+- **Legal Compliance**: Ensure all recommendations are legal and ethical
+- **Privacy Awareness**: Include privacy and security considerations
 
 ## 🔄 Pull Request Process
 
@@ -223,14 +433,12 @@ Releases follow semantic versioning (semver):
 
 ## 📞 Getting Help
 
-- **GitHub Issues**: For bugs and feature requests
-- **GitHub Discussions**: For questions and general discussion
-- **Documentation**: Check `docs/` for detailed guides
+- **GitHub Discussions**: [Ask questions and discuss ideas](https://github.com/KhademOHAli1/OSINT-Framework/discussions)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/KhademOHAli1/OSINT-Framework/issues)
+- **Documentation**: [Enhanced Content System](./ENHANCED_CONTENT_SYSTEM.md)
 
-## 📜 License
+---
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+**Thank you for contributing to the OSINT Framework!** 🎉
 
-## 🙏 Recognition
-
-Contributors will be recognized in the project's acknowledgments. Thank you for helping make OSINT research more accessible!
+Every contribution, no matter how small, helps make this platform better for the entire OSINT community.
