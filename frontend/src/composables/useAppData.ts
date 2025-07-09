@@ -1,27 +1,18 @@
 import { onMounted } from 'vue'
 import { useAppStore } from '../stores/app'
+import { useGraphQLData } from './useGraphQLData'
 
 export function useAppData() {
   const appStore = useAppStore()
+  const { loadTreeData, isLoading, error } = useGraphQLData()
 
   const loadData = async () => {
     try {
       appStore.setLoading(true)
       appStore.setError(null)
       
-      const response = await fetch('/data.json')
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-      }
-      
-      const data = await response.json()
-      
-      if (!data || typeof data !== 'object') {
-        throw new Error('Invalid data format received')
-      }
-      
-      appStore.setData(data)
+      const treeData = await loadTreeData()
+      appStore.setData(treeData)
       
     } catch (error) {
       appStore.setError(error instanceof Error ? error.message : 'Failed to load data')
@@ -43,6 +34,8 @@ export function useAppData() {
 
   return {
     loadData,
-    retryLoad
+    retryLoad,
+    isLoading,
+    error
   }
 }

@@ -8,13 +8,33 @@ const databaseURL = process.env.DATABASE_URL || 'postgresql://username:password@
 export default withAuth(
   config({
     db: {
-      provider: 'sqlite',
-      url: 'file:./osint-framework.db',
+      provider: 'postgresql',
+      url: databaseURL,
       onConnect: async context => {
         console.log('Connected to database');
       },
       // Enable logging in development
       enableLogging: process.env.NODE_ENV === 'development',
+    },
+    storage: {
+      local_images: {
+        kind: 'local',
+        type: 'image',
+        generateUrl: path => `${process.env.FRONTEND_URL || 'http://localhost:3000'}/images${path}`,
+        serverRoute: {
+          path: '/images',
+        },
+        storagePath: 'public/images',
+      },
+      local_files: {
+        kind: 'local',
+        type: 'file',
+        generateUrl: path => `${process.env.FRONTEND_URL || 'http://localhost:3000'}/files${path}`,
+        serverRoute: {
+          path: '/files',
+        },
+        storagePath: 'public/files',
+      },
     },
     lists,
     session,

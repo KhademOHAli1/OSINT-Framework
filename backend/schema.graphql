@@ -58,7 +58,13 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
+  mode: QueryMode
   not: NestedStringFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 input NestedStringFilter {
@@ -86,6 +92,7 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
+  mode: QueryMode
   not: StringNullableFilter
 }
 
@@ -312,6 +319,8 @@ type Tool {
   submittedBy: User
   reviews(where: ReviewWhereInput! = {}, orderBy: [ReviewOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ReviewWhereUniqueInput): [Review!]
   reviewsCount(where: ReviewWhereInput! = {}): Int
+  guides(where: ToolGuideWhereInput! = {}, orderBy: [ToolGuideOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ToolGuideWhereUniqueInput): [ToolGuide!]
+  guidesCount(where: ToolGuideWhereInput! = {}): Int
   metadata: JSON
   sortOrder: Int
   isFeatured: Boolean
@@ -349,6 +358,7 @@ input ToolWhereInput {
   lastUpdated: DateTimeNullableFilter
   submittedBy: UserWhereInput
   reviews: ReviewManyRelationFilter
+  guides: ToolGuideManyRelationFilter
   sortOrder: IntNullableFilter
   isFeatured: BooleanFilter
   isVerified: BooleanFilter
@@ -365,6 +375,12 @@ input ReviewManyRelationFilter {
   every: ReviewWhereInput
   some: ReviewWhereInput
   none: ReviewWhereInput
+}
+
+input ToolGuideManyRelationFilter {
+  every: ToolGuideWhereInput
+  some: ToolGuideWhereInput
+  none: ToolGuideWhereInput
 }
 
 input ToolOrderByInput {
@@ -407,6 +423,7 @@ input ToolUpdateInput {
   lastUpdated: DateTime
   submittedBy: UserRelateToOneForUpdateInput
   reviews: ReviewRelateToManyForUpdateInput
+  guides: ToolGuideRelateToManyForUpdateInput
   metadata: JSON
   sortOrder: Int
   isFeatured: Boolean
@@ -434,6 +451,13 @@ input ReviewRelateToManyForUpdateInput {
   connect: [ReviewWhereUniqueInput!]
 }
 
+input ToolGuideRelateToManyForUpdateInput {
+  disconnect: [ToolGuideWhereUniqueInput!]
+  set: [ToolGuideWhereUniqueInput!]
+  create: [ToolGuideCreateInput!]
+  connect: [ToolGuideWhereUniqueInput!]
+}
+
 input ToolUpdateArgs {
   where: ToolWhereUniqueInput!
   data: ToolUpdateInput!
@@ -459,6 +483,7 @@ input ToolCreateInput {
   lastUpdated: DateTime
   submittedBy: UserRelateToOneForCreateInput
   reviews: ReviewRelateToManyForCreateInput
+  guides: ToolGuideRelateToManyForCreateInput
   metadata: JSON
   sortOrder: Int
   isFeatured: Boolean
@@ -479,6 +504,11 @@ input UserRelateToOneForCreateInput {
 input ReviewRelateToManyForCreateInput {
   create: [ReviewCreateInput!]
   connect: [ReviewWhereUniqueInput!]
+}
+
+input ToolGuideRelateToManyForCreateInput {
+  create: [ToolGuideCreateInput!]
+  connect: [ToolGuideWhereUniqueInput!]
 }
 
 type Tag {
@@ -921,6 +951,694 @@ input NewsItemCreateInput {
   updatedAt: DateTime
 }
 
+type Article {
+  id: ID!
+  title: String
+  slug: String
+  summary: String
+  content: Article_content_Document
+  author: User
+  category: String
+  relatedTools(where: ToolWhereInput! = {}, orderBy: [ToolOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ToolWhereUniqueInput): [Tool!]
+  relatedToolsCount(where: ToolWhereInput! = {}): Int
+  relatedArticles(where: ArticleWhereInput! = {}, orderBy: [ArticleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ArticleWhereUniqueInput): [Article!]
+  relatedArticlesCount(where: ArticleWhereInput! = {}): Int
+  tags(where: ContentTagWhereInput! = {}, orderBy: [ContentTagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContentTagWhereUniqueInput): [ContentTag!]
+  tagsCount(where: ContentTagWhereInput! = {}): Int
+  featuredImage: ImageFieldOutput
+  gallery: JSON
+  metadata: JSON
+  difficultyLevel: String
+  estimatedReadTime: Int
+  isPublished: Boolean
+  isFeatured: Boolean
+  publishedAt: DateTime
+  lastReviewed: DateTime
+  viewCount: Int
+  likeCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type Article_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+type ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  url: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
+}
+
+input ArticleWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input ArticleWhereInput {
+  AND: [ArticleWhereInput!]
+  OR: [ArticleWhereInput!]
+  NOT: [ArticleWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  slug: StringFilter
+  summary: StringFilter
+  author: UserWhereInput
+  category: StringNullableFilter
+  relatedTools: ToolManyRelationFilter
+  relatedArticles: ArticleManyRelationFilter
+  tags: ContentTagManyRelationFilter
+  difficultyLevel: StringNullableFilter
+  estimatedReadTime: IntNullableFilter
+  isPublished: BooleanFilter
+  isFeatured: BooleanFilter
+  publishedAt: DateTimeNullableFilter
+  lastReviewed: DateTimeNullableFilter
+  viewCount: IntNullableFilter
+  likeCount: IntNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input ArticleManyRelationFilter {
+  every: ArticleWhereInput
+  some: ArticleWhereInput
+  none: ArticleWhereInput
+}
+
+input ContentTagManyRelationFilter {
+  every: ContentTagWhereInput
+  some: ContentTagWhereInput
+  none: ContentTagWhereInput
+}
+
+input ArticleOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  slug: OrderDirection
+  summary: OrderDirection
+  category: OrderDirection
+  difficultyLevel: OrderDirection
+  estimatedReadTime: OrderDirection
+  isPublished: OrderDirection
+  isFeatured: OrderDirection
+  publishedAt: OrderDirection
+  lastReviewed: OrderDirection
+  viewCount: OrderDirection
+  likeCount: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input ArticleUpdateInput {
+  title: String
+  slug: String
+  summary: String
+  content: JSON
+  author: UserRelateToOneForUpdateInput
+  category: String
+  relatedTools: ToolRelateToManyForUpdateInput
+  relatedArticles: ArticleRelateToManyForUpdateInput
+  tags: ContentTagRelateToManyForUpdateInput
+  featuredImage: ImageFieldInput
+  gallery: JSON
+  metadata: JSON
+  difficultyLevel: String
+  estimatedReadTime: Int
+  isPublished: Boolean
+  isFeatured: Boolean
+  publishedAt: DateTime
+  lastReviewed: DateTime
+  viewCount: Int
+  likeCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input ArticleRelateToManyForUpdateInput {
+  disconnect: [ArticleWhereUniqueInput!]
+  set: [ArticleWhereUniqueInput!]
+  create: [ArticleCreateInput!]
+  connect: [ArticleWhereUniqueInput!]
+}
+
+input ContentTagRelateToManyForUpdateInput {
+  disconnect: [ContentTagWhereUniqueInput!]
+  set: [ContentTagWhereUniqueInput!]
+  create: [ContentTagCreateInput!]
+  connect: [ContentTagWhereUniqueInput!]
+}
+
+input ImageFieldInput {
+  upload: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input ArticleUpdateArgs {
+  where: ArticleWhereUniqueInput!
+  data: ArticleUpdateInput!
+}
+
+input ArticleCreateInput {
+  title: String
+  slug: String
+  summary: String
+  content: JSON
+  author: UserRelateToOneForCreateInput
+  category: String
+  relatedTools: ToolRelateToManyForCreateInput
+  relatedArticles: ArticleRelateToManyForCreateInput
+  tags: ContentTagRelateToManyForCreateInput
+  featuredImage: ImageFieldInput
+  gallery: JSON
+  metadata: JSON
+  difficultyLevel: String
+  estimatedReadTime: Int
+  isPublished: Boolean
+  isFeatured: Boolean
+  publishedAt: DateTime
+  lastReviewed: DateTime
+  viewCount: Int
+  likeCount: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input ArticleRelateToManyForCreateInput {
+  create: [ArticleCreateInput!]
+  connect: [ArticleWhereUniqueInput!]
+}
+
+input ContentTagRelateToManyForCreateInput {
+  create: [ContentTagCreateInput!]
+  connect: [ContentTagWhereUniqueInput!]
+}
+
+type ToolGuide {
+  id: ID!
+  tool: Tool
+  title: String
+  type: String
+  content: ToolGuide_content_Document
+  author: User
+  prerequisites: String
+  learningObjectives: JSON
+  screenshots: JSON
+  videoUrl: String
+  codeExamples: JSON
+  difficultyLevel: String
+  estimatedTime: Int
+  isPublished: Boolean
+  lastUpdated: DateTime
+  viewCount: Int
+  helpfulCount: Int
+  createdAt: DateTime
+}
+
+type ToolGuide_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input ToolGuideWhereUniqueInput {
+  id: ID
+}
+
+input ToolGuideWhereInput {
+  AND: [ToolGuideWhereInput!]
+  OR: [ToolGuideWhereInput!]
+  NOT: [ToolGuideWhereInput!]
+  id: IDFilter
+  tool: ToolWhereInput
+  title: StringFilter
+  type: StringNullableFilter
+  author: UserWhereInput
+  prerequisites: StringFilter
+  videoUrl: StringFilter
+  difficultyLevel: StringNullableFilter
+  estimatedTime: IntNullableFilter
+  isPublished: BooleanFilter
+  lastUpdated: DateTimeNullableFilter
+  viewCount: IntNullableFilter
+  helpfulCount: IntNullableFilter
+  createdAt: DateTimeNullableFilter
+}
+
+input ToolGuideOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  type: OrderDirection
+  prerequisites: OrderDirection
+  videoUrl: OrderDirection
+  difficultyLevel: OrderDirection
+  estimatedTime: OrderDirection
+  isPublished: OrderDirection
+  lastUpdated: OrderDirection
+  viewCount: OrderDirection
+  helpfulCount: OrderDirection
+  createdAt: OrderDirection
+}
+
+input ToolGuideUpdateInput {
+  tool: ToolRelateToOneForUpdateInput
+  title: String
+  type: String
+  content: JSON
+  author: UserRelateToOneForUpdateInput
+  prerequisites: String
+  learningObjectives: JSON
+  screenshots: JSON
+  videoUrl: String
+  codeExamples: JSON
+  difficultyLevel: String
+  estimatedTime: Int
+  isPublished: Boolean
+  lastUpdated: DateTime
+  viewCount: Int
+  helpfulCount: Int
+  createdAt: DateTime
+}
+
+input ToolGuideUpdateArgs {
+  where: ToolGuideWhereUniqueInput!
+  data: ToolGuideUpdateInput!
+}
+
+input ToolGuideCreateInput {
+  tool: ToolRelateToOneForCreateInput
+  title: String
+  type: String
+  content: JSON
+  author: UserRelateToOneForCreateInput
+  prerequisites: String
+  learningObjectives: JSON
+  screenshots: JSON
+  videoUrl: String
+  codeExamples: JSON
+  difficultyLevel: String
+  estimatedTime: Int
+  isPublished: Boolean
+  lastUpdated: DateTime
+  viewCount: Int
+  helpfulCount: Int
+  createdAt: DateTime
+}
+
+type MediaFile {
+  id: ID!
+  name: String
+  description: String
+  file: FileFieldOutput
+  type: String
+  alt: String
+  tags(where: ContentTagWhereInput! = {}, orderBy: [ContentTagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContentTagWhereUniqueInput): [ContentTag!]
+  tagsCount(where: ContentTagWhereInput! = {}): Int
+  uploadedBy: User
+  fileSize: Int
+  mimeType: String
+  isPublic: Boolean
+  createdAt: DateTime
+}
+
+type FileFieldOutput {
+  filename: String!
+  filesize: Int!
+  url: String!
+}
+
+input MediaFileWhereUniqueInput {
+  id: ID
+}
+
+input MediaFileWhereInput {
+  AND: [MediaFileWhereInput!]
+  OR: [MediaFileWhereInput!]
+  NOT: [MediaFileWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  description: StringFilter
+  type: StringNullableFilter
+  alt: StringFilter
+  tags: ContentTagManyRelationFilter
+  uploadedBy: UserWhereInput
+  fileSize: IntNullableFilter
+  mimeType: StringFilter
+  isPublic: BooleanFilter
+  createdAt: DateTimeNullableFilter
+}
+
+input MediaFileOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  description: OrderDirection
+  type: OrderDirection
+  alt: OrderDirection
+  fileSize: OrderDirection
+  mimeType: OrderDirection
+  isPublic: OrderDirection
+  createdAt: OrderDirection
+}
+
+input MediaFileUpdateInput {
+  name: String
+  description: String
+  file: FileFieldInput
+  type: String
+  alt: String
+  tags: ContentTagRelateToManyForUpdateInput
+  uploadedBy: UserRelateToOneForUpdateInput
+  fileSize: Int
+  mimeType: String
+  isPublic: Boolean
+  createdAt: DateTime
+}
+
+input FileFieldInput {
+  upload: Upload!
+}
+
+input MediaFileUpdateArgs {
+  where: MediaFileWhereUniqueInput!
+  data: MediaFileUpdateInput!
+}
+
+input MediaFileCreateInput {
+  name: String
+  description: String
+  file: FileFieldInput
+  type: String
+  alt: String
+  tags: ContentTagRelateToManyForCreateInput
+  uploadedBy: UserRelateToOneForCreateInput
+  fileSize: Int
+  mimeType: String
+  isPublic: Boolean
+  createdAt: DateTime
+}
+
+type ContentTag {
+  id: ID!
+  name: String
+  slug: String
+  description: String
+  color: String
+  articles(where: ArticleWhereInput! = {}, orderBy: [ArticleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ArticleWhereUniqueInput): [Article!]
+  articlesCount(where: ArticleWhereInput! = {}): Int
+  media(where: MediaFileWhereInput! = {}, orderBy: [MediaFileOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MediaFileWhereUniqueInput): [MediaFile!]
+  mediaCount(where: MediaFileWhereInput! = {}): Int
+  usageCount: Int
+  createdAt: DateTime
+}
+
+input ContentTagWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input ContentTagWhereInput {
+  AND: [ContentTagWhereInput!]
+  OR: [ContentTagWhereInput!]
+  NOT: [ContentTagWhereInput!]
+  id: IDFilter
+  name: StringFilter
+  slug: StringFilter
+  description: StringFilter
+  color: StringFilter
+  articles: ArticleManyRelationFilter
+  media: MediaFileManyRelationFilter
+  usageCount: IntNullableFilter
+  createdAt: DateTimeNullableFilter
+}
+
+input MediaFileManyRelationFilter {
+  every: MediaFileWhereInput
+  some: MediaFileWhereInput
+  none: MediaFileWhereInput
+}
+
+input ContentTagOrderByInput {
+  id: OrderDirection
+  name: OrderDirection
+  slug: OrderDirection
+  description: OrderDirection
+  color: OrderDirection
+  usageCount: OrderDirection
+  createdAt: OrderDirection
+}
+
+input ContentTagUpdateInput {
+  name: String
+  slug: String
+  description: String
+  color: String
+  articles: ArticleRelateToManyForUpdateInput
+  media: MediaFileRelateToManyForUpdateInput
+  usageCount: Int
+  createdAt: DateTime
+}
+
+input MediaFileRelateToManyForUpdateInput {
+  disconnect: [MediaFileWhereUniqueInput!]
+  set: [MediaFileWhereUniqueInput!]
+  create: [MediaFileCreateInput!]
+  connect: [MediaFileWhereUniqueInput!]
+}
+
+input ContentTagUpdateArgs {
+  where: ContentTagWhereUniqueInput!
+  data: ContentTagUpdateInput!
+}
+
+input ContentTagCreateInput {
+  name: String
+  slug: String
+  description: String
+  color: String
+  articles: ArticleRelateToManyForCreateInput
+  media: MediaFileRelateToManyForCreateInput
+  usageCount: Int
+  createdAt: DateTime
+}
+
+input MediaFileRelateToManyForCreateInput {
+  create: [MediaFileCreateInput!]
+  connect: [MediaFileWhereUniqueInput!]
+}
+
+type LearningPath {
+  id: ID!
+  title: String
+  slug: String
+  description: String
+  content: LearningPath_content_Document
+  creator: User
+  difficulty: String
+  estimatedDuration: Int
+  tools(where: ToolWhereInput! = {}, orderBy: [ToolOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ToolWhereUniqueInput): [Tool!]
+  toolsCount(where: ToolWhereInput! = {}): Int
+  articles(where: ArticleWhereInput! = {}, orderBy: [ArticleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ArticleWhereUniqueInput): [Article!]
+  articlesCount(where: ArticleWhereInput! = {}): Int
+  prerequisites: JSON
+  learningOutcomes: JSON
+  isPublished: Boolean
+  isFeatured: Boolean
+  enrollmentCount: Int
+  completionRate: Int
+  rating: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type LearningPath_content_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input LearningPathWhereUniqueInput {
+  id: ID
+  slug: String
+}
+
+input LearningPathWhereInput {
+  AND: [LearningPathWhereInput!]
+  OR: [LearningPathWhereInput!]
+  NOT: [LearningPathWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  slug: StringFilter
+  description: StringFilter
+  creator: UserWhereInput
+  difficulty: StringNullableFilter
+  estimatedDuration: IntNullableFilter
+  tools: ToolManyRelationFilter
+  articles: ArticleManyRelationFilter
+  isPublished: BooleanFilter
+  isFeatured: BooleanFilter
+  enrollmentCount: IntNullableFilter
+  completionRate: IntNullableFilter
+  rating: IntNullableFilter
+  createdAt: DateTimeNullableFilter
+  updatedAt: DateTimeNullableFilter
+}
+
+input LearningPathOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  slug: OrderDirection
+  description: OrderDirection
+  difficulty: OrderDirection
+  estimatedDuration: OrderDirection
+  isPublished: OrderDirection
+  isFeatured: OrderDirection
+  enrollmentCount: OrderDirection
+  completionRate: OrderDirection
+  rating: OrderDirection
+  createdAt: OrderDirection
+  updatedAt: OrderDirection
+}
+
+input LearningPathUpdateInput {
+  title: String
+  slug: String
+  description: String
+  content: JSON
+  creator: UserRelateToOneForUpdateInput
+  difficulty: String
+  estimatedDuration: Int
+  tools: ToolRelateToManyForUpdateInput
+  articles: ArticleRelateToManyForUpdateInput
+  prerequisites: JSON
+  learningOutcomes: JSON
+  isPublished: Boolean
+  isFeatured: Boolean
+  enrollmentCount: Int
+  completionRate: Int
+  rating: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input LearningPathUpdateArgs {
+  where: LearningPathWhereUniqueInput!
+  data: LearningPathUpdateInput!
+}
+
+input LearningPathCreateInput {
+  title: String
+  slug: String
+  description: String
+  content: JSON
+  creator: UserRelateToOneForCreateInput
+  difficulty: String
+  estimatedDuration: Int
+  tools: ToolRelateToManyForCreateInput
+  articles: ArticleRelateToManyForCreateInput
+  prerequisites: JSON
+  learningOutcomes: JSON
+  isPublished: Boolean
+  isFeatured: Boolean
+  enrollmentCount: Int
+  completionRate: Int
+  rating: Int
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type Contribution {
+  id: ID!
+  title: String
+  type: String
+  description: String
+  content: JSON
+  contributor: User
+  relatedTool: Tool
+  status: String
+  reviewedBy: User
+  reviewNotes: String
+  priority: String
+  submittedAt: DateTime
+  reviewedAt: DateTime
+}
+
+input ContributionWhereUniqueInput {
+  id: ID
+}
+
+input ContributionWhereInput {
+  AND: [ContributionWhereInput!]
+  OR: [ContributionWhereInput!]
+  NOT: [ContributionWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  type: StringNullableFilter
+  description: StringFilter
+  contributor: UserWhereInput
+  relatedTool: ToolWhereInput
+  status: StringNullableFilter
+  reviewedBy: UserWhereInput
+  reviewNotes: StringFilter
+  priority: StringNullableFilter
+  submittedAt: DateTimeNullableFilter
+  reviewedAt: DateTimeNullableFilter
+}
+
+input ContributionOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  type: OrderDirection
+  description: OrderDirection
+  status: OrderDirection
+  reviewNotes: OrderDirection
+  priority: OrderDirection
+  submittedAt: OrderDirection
+  reviewedAt: OrderDirection
+}
+
+input ContributionUpdateInput {
+  title: String
+  type: String
+  description: String
+  content: JSON
+  contributor: UserRelateToOneForUpdateInput
+  relatedTool: ToolRelateToOneForUpdateInput
+  status: String
+  reviewedBy: UserRelateToOneForUpdateInput
+  reviewNotes: String
+  priority: String
+  submittedAt: DateTime
+  reviewedAt: DateTime
+}
+
+input ContributionUpdateArgs {
+  where: ContributionWhereUniqueInput!
+  data: ContributionUpdateInput!
+}
+
+input ContributionCreateInput {
+  title: String
+  type: String
+  description: String
+  content: JSON
+  contributor: UserRelateToOneForCreateInput
+  relatedTool: ToolRelateToOneForCreateInput
+  status: String
+  reviewedBy: UserRelateToOneForCreateInput
+  reviewNotes: String
+  priority: String
+  submittedAt: DateTime
+  reviewedAt: DateTime
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -981,6 +1699,42 @@ type Mutation {
   updateNewsItems(data: [NewsItemUpdateArgs!]!): [NewsItem]
   deleteNewsItem(where: NewsItemWhereUniqueInput!): NewsItem
   deleteNewsItems(where: [NewsItemWhereUniqueInput!]!): [NewsItem]
+  createArticle(data: ArticleCreateInput!): Article
+  createArticles(data: [ArticleCreateInput!]!): [Article]
+  updateArticle(where: ArticleWhereUniqueInput!, data: ArticleUpdateInput!): Article
+  updateArticles(data: [ArticleUpdateArgs!]!): [Article]
+  deleteArticle(where: ArticleWhereUniqueInput!): Article
+  deleteArticles(where: [ArticleWhereUniqueInput!]!): [Article]
+  createToolGuide(data: ToolGuideCreateInput!): ToolGuide
+  createToolGuides(data: [ToolGuideCreateInput!]!): [ToolGuide]
+  updateToolGuide(where: ToolGuideWhereUniqueInput!, data: ToolGuideUpdateInput!): ToolGuide
+  updateToolGuides(data: [ToolGuideUpdateArgs!]!): [ToolGuide]
+  deleteToolGuide(where: ToolGuideWhereUniqueInput!): ToolGuide
+  deleteToolGuides(where: [ToolGuideWhereUniqueInput!]!): [ToolGuide]
+  createMediaFile(data: MediaFileCreateInput!): MediaFile
+  createMediaFiles(data: [MediaFileCreateInput!]!): [MediaFile]
+  updateMediaFile(where: MediaFileWhereUniqueInput!, data: MediaFileUpdateInput!): MediaFile
+  updateMediaFiles(data: [MediaFileUpdateArgs!]!): [MediaFile]
+  deleteMediaFile(where: MediaFileWhereUniqueInput!): MediaFile
+  deleteMediaFiles(where: [MediaFileWhereUniqueInput!]!): [MediaFile]
+  createContentTag(data: ContentTagCreateInput!): ContentTag
+  createContentTags(data: [ContentTagCreateInput!]!): [ContentTag]
+  updateContentTag(where: ContentTagWhereUniqueInput!, data: ContentTagUpdateInput!): ContentTag
+  updateContentTags(data: [ContentTagUpdateArgs!]!): [ContentTag]
+  deleteContentTag(where: ContentTagWhereUniqueInput!): ContentTag
+  deleteContentTags(where: [ContentTagWhereUniqueInput!]!): [ContentTag]
+  createLearningPath(data: LearningPathCreateInput!): LearningPath
+  createLearningPaths(data: [LearningPathCreateInput!]!): [LearningPath]
+  updateLearningPath(where: LearningPathWhereUniqueInput!, data: LearningPathUpdateInput!): LearningPath
+  updateLearningPaths(data: [LearningPathUpdateArgs!]!): [LearningPath]
+  deleteLearningPath(where: LearningPathWhereUniqueInput!): LearningPath
+  deleteLearningPaths(where: [LearningPathWhereUniqueInput!]!): [LearningPath]
+  createContribution(data: ContributionCreateInput!): Contribution
+  createContributions(data: [ContributionCreateInput!]!): [Contribution]
+  updateContribution(where: ContributionWhereUniqueInput!, data: ContributionUpdateInput!): Contribution
+  updateContributions(data: [ContributionUpdateArgs!]!): [Contribution]
+  deleteContribution(where: ContributionWhereUniqueInput!): Contribution
+  deleteContributions(where: [ContributionWhereUniqueInput!]!): [Contribution]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -1004,33 +1758,51 @@ input CreateInitialUserInput {
 }
 
 type Query {
-  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   usersCount(where: UserWhereInput! = {}): Int
-  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   category(where: CategoryWhereUniqueInput!): Category
+  categories(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   categoriesCount(where: CategoryWhereInput! = {}): Int
-  tools(where: ToolWhereInput! = {}, orderBy: [ToolOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ToolWhereUniqueInput): [Tool!]
   tool(where: ToolWhereUniqueInput!): Tool
+  tools(where: ToolWhereInput! = {}, orderBy: [ToolOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ToolWhereUniqueInput): [Tool!]
   toolsCount(where: ToolWhereInput! = {}): Int
-  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tag(where: TagWhereUniqueInput!): Tag
+  tags(where: TagWhereInput! = {}, orderBy: [TagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: TagWhereUniqueInput): [Tag!]
   tagsCount(where: TagWhereInput! = {}): Int
-  reviews(where: ReviewWhereInput! = {}, orderBy: [ReviewOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ReviewWhereUniqueInput): [Review!]
   review(where: ReviewWhereUniqueInput!): Review
+  reviews(where: ReviewWhereInput! = {}, orderBy: [ReviewOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ReviewWhereUniqueInput): [Review!]
   reviewsCount(where: ReviewWhereInput! = {}): Int
-  toolUsages(where: ToolUsageWhereInput! = {}, orderBy: [ToolUsageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ToolUsageWhereUniqueInput): [ToolUsage!]
   toolUsage(where: ToolUsageWhereUniqueInput!): ToolUsage
+  toolUsages(where: ToolUsageWhereInput! = {}, orderBy: [ToolUsageOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ToolUsageWhereUniqueInput): [ToolUsage!]
   toolUsagesCount(where: ToolUsageWhereInput! = {}): Int
-  searchQueries(where: SearchQueryWhereInput! = {}, orderBy: [SearchQueryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SearchQueryWhereUniqueInput): [SearchQuery!]
   searchQuery(where: SearchQueryWhereUniqueInput!): SearchQuery
+  searchQueries(where: SearchQueryWhereInput! = {}, orderBy: [SearchQueryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SearchQueryWhereUniqueInput): [SearchQuery!]
   searchQueriesCount(where: SearchQueryWhereInput! = {}): Int
-  collections(where: CollectionWhereInput! = {}, orderBy: [CollectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CollectionWhereUniqueInput): [Collection!]
   collection(where: CollectionWhereUniqueInput!): Collection
+  collections(where: CollectionWhereInput! = {}, orderBy: [CollectionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CollectionWhereUniqueInput): [Collection!]
   collectionsCount(where: CollectionWhereInput! = {}): Int
-  newsItems(where: NewsItemWhereInput! = {}, orderBy: [NewsItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NewsItemWhereUniqueInput): [NewsItem!]
   newsItem(where: NewsItemWhereUniqueInput!): NewsItem
+  newsItems(where: NewsItemWhereInput! = {}, orderBy: [NewsItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: NewsItemWhereUniqueInput): [NewsItem!]
   newsItemsCount(where: NewsItemWhereInput! = {}): Int
+  article(where: ArticleWhereUniqueInput!): Article
+  articles(where: ArticleWhereInput! = {}, orderBy: [ArticleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ArticleWhereUniqueInput): [Article!]
+  articlesCount(where: ArticleWhereInput! = {}): Int
+  toolGuide(where: ToolGuideWhereUniqueInput!): ToolGuide
+  toolGuides(where: ToolGuideWhereInput! = {}, orderBy: [ToolGuideOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ToolGuideWhereUniqueInput): [ToolGuide!]
+  toolGuidesCount(where: ToolGuideWhereInput! = {}): Int
+  mediaFile(where: MediaFileWhereUniqueInput!): MediaFile
+  mediaFiles(where: MediaFileWhereInput! = {}, orderBy: [MediaFileOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MediaFileWhereUniqueInput): [MediaFile!]
+  mediaFilesCount(where: MediaFileWhereInput! = {}): Int
+  contentTag(where: ContentTagWhereUniqueInput!): ContentTag
+  contentTags(where: ContentTagWhereInput! = {}, orderBy: [ContentTagOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContentTagWhereUniqueInput): [ContentTag!]
+  contentTagsCount(where: ContentTagWhereInput! = {}): Int
+  learningPath(where: LearningPathWhereUniqueInput!): LearningPath
+  learningPaths(where: LearningPathWhereInput! = {}, orderBy: [LearningPathOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: LearningPathWhereUniqueInput): [LearningPath!]
+  learningPathsCount(where: LearningPathWhereInput! = {}): Int
+  contribution(where: ContributionWhereUniqueInput!): Contribution
+  contributions(where: ContributionWhereInput! = {}, orderBy: [ContributionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ContributionWhereUniqueInput): [Contribution!]
+  contributionsCount(where: ContributionWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }
@@ -1048,23 +1820,25 @@ type KeystoneAdminMeta {
 
 type KeystoneAdminUIListMeta {
   key: String!
-  itemQueryName: String!
-  listQueryName: String!
-  hideCreate: Boolean!
-  hideDelete: Boolean!
   path: String!
   label: String!
   singular: String!
   plural: String!
   description: String
-  initialColumns: [String!]!
   pageSize: Int!
   labelField: String!
   fields: [KeystoneAdminUIFieldMeta!]!
   groups: [KeystoneAdminUIFieldGroupMeta!]!
+  graphql: KeystoneAdminUIGraphQL!
+  initialColumns: [String!]!
+  initialSearchFields: [String!]!
   initialSort: KeystoneAdminUISort
-  isHidden: Boolean!
   isSingleton: Boolean!
+  hideCreate: Boolean!
+  hideDelete: Boolean!
+  isHidden: Boolean!
+  itemQueryName: String!
+  listQueryName: String!
 }
 
 type KeystoneAdminUIFieldMeta {
@@ -1123,15 +1897,37 @@ enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
   sidebar
 }
 
-enum QueryMode {
-  default
-  insensitive
-}
-
 type KeystoneAdminUIFieldGroupMeta {
   label: String!
   description: String
   fields: [KeystoneAdminUIFieldMeta!]!
+}
+
+type KeystoneAdminUIGraphQL {
+  names: KeystoneAdminUIGraphQLNames!
+}
+
+type KeystoneAdminUIGraphQLNames {
+  outputTypeName: String!
+  whereInputName: String!
+  whereUniqueInputName: String!
+  createInputName: String!
+  createMutationName: String!
+  createManyMutationName: String!
+  relateToOneForCreateInputName: String!
+  relateToManyForCreateInputName: String!
+  itemQueryName: String!
+  listOrderName: String!
+  listQueryCountName: String!
+  listQueryName: String!
+  updateInputName: String!
+  updateMutationName: String!
+  updateManyInputName: String!
+  updateManyMutationName: String!
+  relateToOneForUpdateInputName: String!
+  relateToManyForUpdateInputName: String!
+  deleteMutationName: String!
+  deleteManyMutationName: String!
 }
 
 type KeystoneAdminUISort {

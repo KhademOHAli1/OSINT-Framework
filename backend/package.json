@@ -16,15 +16,19 @@
     "postinstall": "keystone postinstall --fix"
   },
   "dependencies": {
-    "@keystone-6/auth": "^7.0.3",
-    "@keystone-6/core": "^5.7.0",
-    "@keystone-6/fields-document": "^8.0.2",
+    "@keystone-6/auth": "^8.1.0",
+    "@keystone-6/core": "^6.5.1",
+    "@keystone-6/fields-document": "^9.1.1",
     "dotenv": "^16.4.5",
     "typescript": "^5.3.3"
   },
   "devDependencies": {
     "@types/node": "^20.11.5",
-    "prisma": "^5.8.1"
+    "prisma": "^5.8.1",
+    "tsx": "^4.20.3"
+  },
+  "overrides": {
+    "esbuild": "^0.25.6"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

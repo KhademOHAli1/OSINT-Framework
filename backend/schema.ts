@@ -9,8 +9,11 @@ import {
   integer,
   json,
   checkbox,
+  image,
+  file,
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
+import { contentLists } from './enhanced-schema';
 
 export const lists = {
   // User management
@@ -149,6 +152,10 @@ export const lists = {
       }),
       reviews: relationship({
         ref: 'Review.tool',
+        many: true,
+      }),
+      guides: relationship({
+        ref: 'ToolGuide.tool',
         many: true,
       }),
       metadata: json({
@@ -339,4 +346,7 @@ export const lists = {
       }),
     },
   }),
+
+  // Enhanced content management lists
+  ...contentLists,
 };

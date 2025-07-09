@@ -1,13 +1,99 @@
 export interface TreeNode {
+  id: string;
   name: string;
-  type: 'folder' | 'url';
+  type: 'folder' | 'url' | 'category' | 'tool' | 'root';
   url?: string;
   description?: string;
   children?: TreeNode[];
+  level?: number;
   highlighted?: boolean; // For search highlighting
   status?: ToolStatus; // For status monitoring
   lastChecked?: string; // ISO date string
   responseTime?: number; // in milliseconds
+  toolData?: Tool; // Extended tool information
+  categoryData?: Category; // Extended category information
+}
+
+export interface Tool {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  longDescription?: any; // Rich content from Keystone
+  url: string;
+  alternativeUrls?: string[];
+  type: string;
+  status: string;
+  isPaid: boolean;
+  requiresRegistration: boolean;
+  supportedRegions?: string[];
+  rating?: number;
+  usageCount?: number;
+  lastChecked?: string;
+  lastUpdated?: string;
+  isFeatured: boolean;
+  isVerified: boolean;
+  categories?: Category[];
+  tags?: Tag[];
+  reviews?: Review[];
+  metadata?: any;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  color?: string;
+  icon?: string;
+  parentCategory?: Category;
+  subCategories?: Category[];
+  tools?: Tool[];
+  sortOrder?: number;
+  isActive: boolean;
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  color?: string;
+  usageCount?: number;
+}
+
+export interface Review {
+  id: string;
+  rating: number;
+  title: string;
+  content: string;
+  isVerified: boolean;
+  isHelpful?: number;
+  user?: User;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email?: string;
+  role: string;
+}
+
+export interface NewsItem {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  content: any; // Rich content
+  author?: User;
+  category: string;
+  relatedTools?: Tool[];
+  isPublished: boolean;
+  publishedAt?: string;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface ToolStatus {
