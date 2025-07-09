@@ -126,3 +126,95 @@ export interface SearchStats {
 }
 
 export type Theme = 'light' | 'dark';
+
+export interface ToolGuide {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  content: any; // Rich content from Keystone
+  type: string; // Guide type (tutorial, quickstart, advanced, etc.)
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  estimatedTime?: number; // in minutes
+  prerequisites?: string[];
+  tool?: Tool;
+  author?: User;
+  isPublished: boolean;
+  publishedAt?: string;
+  createdAt: string;
+  updatedAt?: string;
+  tags?: Tag[];
+  metadata?: any;
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  content: any; // Rich content
+  author?: User;
+  category: string;
+  relatedTools?: Tool[];
+  isPublished: boolean;
+  publishedAt?: string;
+  createdAt: string;
+  updatedAt?: string;
+  tags?: Tag[];
+  metadata?: any;
+}
+
+export interface LearningPath {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  estimatedDuration?: number; // in hours
+  prerequisites?: string[];
+  learningObjectives?: string[];
+  creator?: User;
+  isPublished: boolean;
+  publishedAt?: string;
+  createdAt: string;
+  updatedAt?: string;
+  tools?: Tool[];
+  guides?: ToolGuide[];
+  articles?: Article[];
+  tags?: Tag[];
+  metadata?: any;
+}
+
+export interface MediaFile {
+  id: string;
+  filename: string;
+  originalFilename: string;
+  mimetype: string;
+  encoding: string;
+  url: string;
+  size?: number;
+  width?: number;
+  height?: number;
+  altText?: string;
+  caption?: string;
+  uploadedBy?: User;
+  createdAt: string;
+  metadata?: any;
+}
+
+export interface Contribution {
+  id: string;
+  title: string;
+  description: string;
+  type: 'tool_addition' | 'tool_update' | 'guide_creation' | 'bug_report' | 'feature_request';
+  status: 'pending' | 'in_review' | 'approved' | 'rejected' | 'completed';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  content?: any; // Rich content
+  attachments?: MediaFile[];
+  contributor?: User;
+  reviewedBy?: User;
+  submittedAt: string;
+  reviewedAt?: string;
+  completedAt?: string;
+  metadata?: any;
+}

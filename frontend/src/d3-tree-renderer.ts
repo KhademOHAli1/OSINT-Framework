@@ -11,7 +11,7 @@ interface TreeNode {
   y?: number;
   x0?: number;
   y0?: number;
-  id?: number;
+  id?: string | number;
   parent?: TreeNode;
   depth?: number;
 }
@@ -84,10 +84,10 @@ export class D3TreeRenderer {
 
   private convertToTreeNode(node: OSINTNode): TreeNode {
     const treeNode: TreeNode = {
+      id: node.id || `node-${++this.nodeId}`,
       name: node.name,
-      type: node.type,
-      url: node.url,
-      id: ++this.nodeId
+      type: node.type as 'folder' | 'url',
+      url: node.url
     };
 
     if (node.children) {
@@ -496,6 +496,7 @@ export class D3TreeRenderer {
 
   private convertTreeNodeToOSINT(node: TreeNode): OSINTNode {
     const osintNode: OSINTNode = {
+      id: node.id?.toString() || node.name,
       name: node.name,
       type: node.type,
       url: node.url

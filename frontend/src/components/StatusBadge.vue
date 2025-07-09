@@ -51,7 +51,7 @@
     <div
       v-if="lastChecked && !compact"
       class="text-xs text-gray-500 dark:text-gray-400"
-      :title="`Last checked: ${lastCheckedDate.toLocaleString()}`"
+      :title="`Last checked: ${lastCheckedDate?.toLocaleString()}`"
     >
       {{ relativeTime }}
     </div>

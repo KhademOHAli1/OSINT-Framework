@@ -305,7 +305,7 @@ const toolIcon = computed(() => {
 })
 
 const usageTips = computed(() => {
-  const tips = []
+  const tips: string[] = []
   const name = props.tool.name.toLowerCase()
   
   if (name.includes('(t)')) {

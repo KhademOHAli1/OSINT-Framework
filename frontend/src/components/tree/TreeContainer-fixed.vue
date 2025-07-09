@@ -1,7 +1,18 @@
 <template>
   <section class="relative">
-    <!-- Loading State -->
-    <div v-if="isLoading" class="flex items-center justify-center min-h-48 sm:min-h-96">
+    <!-- Loading  const tool: TreeNode = {
+    id: data.tool.name, // Use name as id if no id exists
+    name: data.tool.name,
+    type: data.tool.type as 'folder' | 'url',
+    url: data.tool.url,
+    children: data.tool.children,
+    description: '', // Default empty description
+    category: '', // Default empty category
+    tags: [], // Default empty tags
+    lastChecked: undefined,
+    status: 'unknown' as const,
+    responseTime: undefined
+  }   <div v-if="isLoading" class="flex items-center justify-center min-h-48 sm:min-h-96">
       <div class="text-center">
         <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500 mx-auto mb-6"></div>
         <p class="text-gray-600 dark:text-gray-300 text-lg">Loading OSINT Framework...</p>

@@ -162,7 +162,11 @@
     </footer>
     
     <!-- Tool Modal -->
-    <ToolModal />
+    <ToolModal 
+      :tool="modalTool"
+      :is-visible="isModalVisible"
+      @close="closeModal"
+    />
   </div>
 </template>
 
@@ -234,6 +238,19 @@ const handleSearch = (query: string) => {
 // Handle clear search from SearchBar component
 const handleClearSearch = () => {
   appStore.clearSearch()
+}
+
+// Modal state
+const isModalVisible = ref(false)
+const modalTool = ref({
+  id: '',
+  name: '',
+  type: 'url' as const,
+  url: ''
+})
+
+const closeModal = () => {
+  isModalVisible.value = false
 }
 
 onMounted(() => {

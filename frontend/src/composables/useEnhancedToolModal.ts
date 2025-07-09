@@ -92,9 +92,33 @@ export function useEnhancedToolModal() {
       isLoading.value = true
       error.value = null
 
-      // Load detailed tool information
+      // Load detailed tool information and transform it
       const detailedTool = await loadToolDetails(tool.slug)
-      currentTool.value = detailedTool
+      if (detailedTool) {
+        // Transform the tool data to match our interface
+        const transformedTool: Tool = {
+          ...detailedTool,
+          categories: detailedTool.categories?.map(cat => ({
+            ...cat,
+            description: '', // Default empty description
+            isActive: true // Default active state
+          })),
+          tags: detailedTool.tags?.map(tag => ({
+            ...tag,
+            description: '', // Default empty description
+            usageCount: 0 // Default usage count
+          })),
+          reviews: detailedTool.reviews?.map(review => ({
+            ...review,
+            user: {
+              ...review.user,
+              id: review.user?.name || 'unknown', // Use name as fallback ID
+              role: 'user' // Default role
+            }
+          }))
+        }
+        currentTool.value = transformedTool
+      }
 
       // Load guides and reviews in parallel
       await Promise.all([

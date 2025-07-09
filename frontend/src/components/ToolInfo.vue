@@ -40,7 +40,7 @@
                    transition-colors"
             :title="`Open ${tool.name}`"
           >
-            <ExternalLinkIcon class="w-4 h-4 mr-1" />
+            <ArrowTopRightOnSquareIcon class="w-4 h-4 mr-1" />
             Open
           </button>
           
@@ -150,7 +150,7 @@ import { useToolStatus } from '@/composables/useToolStatus'
 import StatusBadge from './StatusBadge.vue'
 import type { TreeNode } from '@/types'
 import {
-  ExternalLinkIcon,
+  ArrowTopRightOnSquareIcon,
   ClipboardIcon,
   LinkIcon,
   InformationCircleIcon,

@@ -91,7 +91,7 @@
 
     <!-- Search Suggestions -->
     <div 
-      v-if="showSuggestions && suggestions.length > 0" 
+      v-if="showSuggestions && suggestions?.length" 
       class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 
              border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-50
              max-h-48 overflow-y-auto"
@@ -181,7 +181,7 @@ const quickFilters: QuickFilter[] = [
 // Methods
 const handleSearchInput = () => {
   emit('search', searchQuery.value)
-  showSuggestions.value = searchQuery.value.length > 0 && props.suggestions && props.suggestions.length > 0
+  showSuggestions.value = searchQuery.value.length > 0 && Boolean(props.suggestions?.length)
   showHistory.value = false
 }
 

@@ -296,9 +296,13 @@ export function useGraphQLData() {
           level,
           children: children.length > 0 ? children : undefined,
           categoryData: {
+            id: category.id,
+            name: category.name,
             slug: category.slug,
+            description: category.description,
             color: category.color,
             icon: category.icon,
+            isActive: true,
           },
         }
       }
