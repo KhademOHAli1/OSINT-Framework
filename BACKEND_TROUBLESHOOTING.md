@@ -1,20 +1,21 @@
 # Backend Troubleshooting Guide
 
-## Quick Fix: Frontend is now working with static data fallback! 🎉
+## Quick Fix: Both Frontend and Backend are now working! 🎉
 
-The frontend has been updated to automatically fallback to static JSON data when the GraphQL backend is not available. This means the tree visualization should work immediately.
+The frontend works with static data fallback, and the backend GraphQL API is now fully operational.
 
 ## Current Status
 
 ### ✅ **Frontend Working**
 - **URL**: http://localhost:3000
-- **Status**: Running with static data fallback
+- **Status**: Running with static data fallback (seamlessly switches to GraphQL when backend is available)
 - **Features**: Full tree visualization, search, tool information
 
-### ⚠️ **Backend Setup Needed**
-- **URL**: http://localhost:4000 (when running)
-- **Status**: Needs configuration
+### ✅ **Backend Working**
+- **URL**: http://localhost:4000 (Admin UI and GraphQL API)
+- **Status**: Running successfully with PostgreSQL
 - **Features**: Enhanced content, user management, GraphQL API
+- **Admin Login**: admin@osint.com (password: admin123)
 
 ## Backend Setup Steps
 

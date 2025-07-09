@@ -3,7 +3,7 @@ import { lists } from './schema';
 import { withAuth, session } from './auth';
 // import { extendedSchema } from './src/graphql-extensions';
 
-const databaseURL = process.env.DATABASE_URL || 'postgresql://username:password@localhost:5432/osint_framework';
+const databaseURL = process.env.DATABASE_URL || 'postgresql://ali@localhost:5432/osint_framework';
 
 export default withAuth(
   config({

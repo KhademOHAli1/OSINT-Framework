@@ -20,7 +20,6 @@ This roadmap outlines the planned features, improvements, and milestones for the
 - [ ] **Global search bar** with real-time filtering
 - [ ] **Category-based filters** (by tool type, region, etc.)
 - [ ] **Tag-based organization** system
-- [ ] **Search history** and saved searches
 - [ ] **Advanced search** with multiple criteria
 
 ### 1.2 User Experience Improvements
