@@ -1,0 +1,42 @@
+{
+  "name": "osint-framework-backend",
+  "version": "1.0.0",
+  "description": "KeystoneJS backend for OSINT Framework with PostgreSQL",
+  "main": "keystone.ts",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build && keystone postinstall --fix",
+    "migrate": "keystone prisma migrate dev",
+    "migrate:deploy": "keystone prisma migrate deploy",
+    "migrate:reset": "keystone prisma migrate reset",
+    "seed": "keystone prisma db seed",
+    "studio": "keystone prisma studio",
+    "generate": "keystone prisma generate",
+    "postinstall": "keystone postinstall --fix"
+  },
+  "dependencies": {
+    "@keystone-6/auth": "^7.0.3",
+    "@keystone-6/core": "^5.7.0",
+    "@keystone-6/fields-document": "^8.0.2",
+    "@keystone-6/cloudinary": "^3.0.1",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "prisma": "^5.8.1"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "keywords": [
+    "keystone",
+    "cms",
+    "graphql",
+    "osint",
+    "postgresql"
+  ],
+  "author": "OSINT Framework Team",
+  "license": "MIT"
+}
