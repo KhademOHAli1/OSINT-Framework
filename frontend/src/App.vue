@@ -20,28 +20,15 @@
           
           <!-- Search Bar -->
           <div class="flex-1 max-w-md sm:max-w-2xl">
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                <svg class="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-              </div>
-              <input
-                v-model="appStore.searchTerm"
-                type="text"
-                placeholder="Search OSINT tools..."
-                class="block w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-2 sm:py-3 border border-gray-200 dark:border-gray-600 rounded-lg sm:rounded-xl bg-gray-50 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:bg-white dark:hover:bg-gray-600 focus:bg-white dark:focus:bg-gray-600 text-sm sm:text-base"
-              />
-              <button
-                v-if="appStore.searchTerm"
-                @click="appStore.clearSearch()"
-                class="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center"
-              >
-                <svg class="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 hover:text-gray-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-              </button>
-            </div>
+            <SearchBar 
+              :search-stats="searchStats"
+              :show-quick-filters="true"
+              :show-history="true"
+              :show-suggestions="true"
+              :suggestions="searchSuggestions"
+              @search="handleSearch"
+              @clear="handleClearSearch"
+            />
           </div>
           
           <!-- Action buttons -->
@@ -178,15 +165,73 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useAppStore } from './stores/app'
 import { useAppData } from './composables/useAppData'
+import { useSearch } from './composables/useSearch'
+import type { SearchStats } from '@/types'
 import TreeContainer from './components/tree/TreeContainer-fixed.vue'
+import SearchBar from './components/SearchBar.vue'
 
 const appStore = useAppStore()
+const { getSearchStats } = useSearch()
 
 // Initialize app data
 useAppData()
+
+// Generate search suggestions based on the current data
+const searchSuggestions = computed(() => {
+  if (!appStore.data) return []
+  
+  const suggestions = new Set<string>()
+  
+  const extractSuggestions = (node: any, depth = 0) => {
+    if (depth > 3) return // Limit depth to avoid too many suggestions
+    
+    // Add category names as suggestions
+    if (node.type === 'folder') {
+      suggestions.add(node.name)
+    }
+    
+    // Add tool names as suggestions
+    if (node.type === 'url') {
+      suggestions.add(node.name)
+      // Extract keywords from tool names
+      const words = node.name.toLowerCase().split(/[\s\-_(),]+/)
+      words.forEach(word => {
+        if (word.length > 2 && !['the', 'and', 'for', 'with'].includes(word)) {
+          suggestions.add(word)
+        }
+      })
+    }
+    
+    if (node.children) {
+      node.children.forEach((child: any) => extractSuggestions(child, depth + 1))
+    }
+  }
+  
+  extractSuggestions(appStore.data)
+  return Array.from(suggestions).slice(0, 10) // Limit to 10 suggestions
+})
+
+// Compute search statistics
+const searchStats = computed(() => {
+  if (!appStore.filteredData || !appStore.searchTerm.trim()) {
+    return null
+  }
+  
+  return getSearchStats(computed(() => appStore.filteredData)).value
+})
+
+// Handle search from SearchBar component
+const handleSearch = (query: string) => {
+  appStore.setSearchTerm(query)
+}
+
+// Handle clear search from SearchBar component
+const handleClearSearch = () => {
+  appStore.clearSearch()
+}
 
 onMounted(() => {
   // Initialize dark mode from localStorage or system preference
