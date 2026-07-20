@@ -2,9 +2,12 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
+
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -55,6 +58,8 @@ jobs:
 
   security:
     runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     
     steps:
     - name: Checkout code
@@ -78,17 +83,18 @@ jobs:
         npm audit --audit-level=high
         
     - name: Dependency vulnerability scan
-      uses: snyk/actions/node@master
+      if: env.SNYK_TOKEN != ''
+      uses: snyk/actions/node@8e119fbb6c251787721d34ba683ed48eba792766 # pinned from master
       continue-on-error: true
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         args: --file=frontend/package.json
 
   deploy-preview:
     runs-on: ubuntu-latest
     needs: [test]
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write
     
     steps:
     - name: Checkout code
@@ -112,8 +118,7 @@ jobs:
         npm run build
         
     - name: Deploy to Preview
-      uses: peaceiris/actions-gh-pages@v3
-      if: github.repository_owner == 'your-username' # Replace with actual username
+      uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
@@ -122,7 +127,9 @@ jobs:
   deploy-production:
     runs-on: ubuntu-latest
     needs: [test, security]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    permissions:
+      contents: write
     
     steps:
     - name: Checkout code
@@ -146,19 +153,7 @@ jobs:
         npm run build
         
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
-        cname: your-domain.com # Optional: replace with your custom domain
-        
-    - name: Create Release
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
