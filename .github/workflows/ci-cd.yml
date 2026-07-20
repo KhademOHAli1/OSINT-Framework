@@ -41,7 +41,7 @@ jobs:
     - name: Type check
       run: |
         cd frontend
-        npx vue-tsc --noEmit
+        npm run type-check
         
     - name: Build application
       run: |
